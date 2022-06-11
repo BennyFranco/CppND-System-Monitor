@@ -52,6 +52,9 @@ std::string Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 long int UpTime(int pid);
+
+// Utils
+template <typename T> T GetFileValue(const std::string& key, std::ifstream &file);
 };  // namespace LinuxParser
 
 #endif
