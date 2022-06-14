@@ -1,6 +1,5 @@
 #include "format.h"
 
-#include <cstring>
 #include <string>
 
 using std::string;
@@ -15,16 +14,21 @@ string Format::ElapsedTime(long seconds) {
   long minutes = seconds / 60;
   seconds %= 60;
 
-  string sHour = Format("%02ld", hour);
-  string sMinutes = Format("%02ld", minutes);
-  string sSeconds = Format("%02ld", seconds);
+  string sHour = FmtString("%02ld", hour);
+  string sMinutes = FmtString("%02ld", minutes);
+  string sSeconds = FmtString("%02ld", seconds);
 
   return string(sHour + ":" + sMinutes + ":" + sSeconds);
 }
+
 template <typename T>
-std::string Format::Format(const std::string& fmt, T value) {
+string Format::FmtString(const std::string& fmt, T value) {
   auto size = std::to_string(value).size() + 1;
   char buffer[size];
   sprintf(buffer, fmt.c_str(), value);
   return string(buffer);
+}
+
+std::string Format::FloatToString(const string& fmt, float value) {
+  return FmtString(fmt, value);
 }

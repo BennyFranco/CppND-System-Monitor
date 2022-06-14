@@ -40,7 +40,15 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
-std::vector<std::string> CpuUtilization();
+enum ProcessStat
+{
+  kUTime = 13,
+  kSTime = 14,
+  kCUTime = 15,
+  kCSTime = 16,
+  kStartTime = 21
+};
+std::vector<long> CpuUtilization();
 long Jiffies();
 long ActiveJiffies();
 long ActiveJiffies(int pid);
@@ -55,6 +63,7 @@ long int UpTime(int pid);
 
 // Utils
 template <typename T> T GetFileValue(const std::string& key, std::ifstream &file);
+long GetProcStatValue(ProcessStat processStat, int pid);
 };  // namespace LinuxParser
 
 #endif
