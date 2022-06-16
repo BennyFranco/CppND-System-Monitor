@@ -4,9 +4,12 @@
 #include <string>
 
 namespace Format {
+template <typename T>
+std::string FmtString(const std::string& fmt, T value);
+std::string FormatFloat(const std::string& fmt, float value);
 std::string ElapsedTime(long times);  // TODO: See src/format.cpp
-template <typename T> std::string FmtString(const std::string& fmt, T value);
-std::string FloatToString(const std::string& fmt, float value);
-};                                    // namespace Format
+std::string Truncate(const std::string& str, unsigned long maxWidth,
+                     bool showEllipsis = true);
+};  // namespace Format
 
 #endif

@@ -24,32 +24,43 @@ float Process::CpuUtilization() {
   auto totalActive = static_cast<float>(activeJiffies - activeJiffiesCache);
   auto totalSystem = static_cast<float>(systemJiffies - systemJiffiesCache);
 
-  long startTime = LinuxParser::GetProcStatValue(LinuxParser::kStartTime, pid);
-  long seconds = LinuxParser::UpTime() - (startTime / sysconf(_SC_CLK_TCK));
-
-  float cpuUsage = (totalActive / totalSystem) / static_cast<float>(seconds);
-
   activeJiffiesCache = activeJiffies;
   systemJiffiesCache = systemJiffies;
+
+  cpuUsage = (totalActive / totalSystem);
 
   return cpuUsage;
 }
 
-// TODO: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(pid); }
-
-// TODO: Return this process's memory utilization
-string Process::Ram() { return LinuxParser::Ram(pid); }
-
-// TODO: Return the user (name) that generated this process
-string Process::User() { return LinuxParser::User(pid); }
-
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(pid); }
-
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process a) {
-  return CpuUtilization() < a.CpuUtilization();
+/// DONE: Return the command that generated this process
+string Process::Command() {
+  if (LinuxParser::Exists(pid)) command = LinuxParser::Command(pid);
+  return command;
 }
-Process::Process(int pid) : pid(pid) {}
+
+// DONE: Return this process's memory utilization
+string Process::Ram() {
+  if (LinuxParser::Exists(pid)) ram = LinuxParser::Ram(pid);
+  return ram;
+}
+
+// DONE: Return the user (name) that generated this process
+string Process::User() {
+  if (LinuxParser::Exists(pid)) user = LinuxParser::User(pid);
+  return user;
+}
+
+// DONE: Return the age of this process (in seconds)
+long int Process::UpTime() {
+  if (LinuxParser::Exists(pid)) uptime = LinuxParser::UpTime(pid);
+  return uptime;
+}
+
+// DONE: Overload the "less than" comparison operator for Process objects
+bool Process::operator<(Process const& a) const {
+  return a.cpuUsage < cpuUsage;
+}
+
+bool Process::operator==(const Process& a) const { return pid == a.pid; }
+
+Process::Process(int p_pid) : pid(p_pid) {}

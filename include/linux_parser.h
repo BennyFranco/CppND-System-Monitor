@@ -40,8 +40,7 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
-enum ProcessStat
-{
+enum ProcessStat {
   kUTime = 13,
   kSTime = 14,
   kCUTime = 15,
@@ -60,10 +59,13 @@ std::string Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 long int UpTime(int pid);
+int CpuCores();
 
 // Utils
-template <typename T> T GetFileValue(const std::string& key, std::ifstream &file);
+template <typename T>
+T GetFileValue(const std::string& key, std::ifstream& file);
 long GetProcStatValue(ProcessStat processStat, int pid);
+bool Exists(int pid);
 };  // namespace LinuxParser
 
 #endif

@@ -4,6 +4,14 @@
 
 using std::string;
 
+template <typename T>
+string Format::FmtString(const std::string& fmt, T value) {
+  auto size = std::to_string(value).size() + 1;
+  char buffer[size];
+  sprintf(buffer, fmt.c_str(), value);
+  return string(buffer);
+}
+
 // DONE: Complete this helper function
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
@@ -21,14 +29,13 @@ string Format::ElapsedTime(long seconds) {
   return string(sHour + ":" + sMinutes + ":" + sSeconds);
 }
 
-template <typename T>
-string Format::FmtString(const std::string& fmt, T value) {
-  auto size = std::to_string(value).size() + 1;
-  char buffer[size];
-  sprintf(buffer, fmt.c_str(), value);
-  return string(buffer);
+std::string Format::Truncate(const string& str, unsigned long maxWidth,
+                             bool showEllipsis) {
+  if (str.length() > maxWidth) {
+    return str.substr(0, maxWidth) + (showEllipsis ? "..." : +"");
+  }
+  return str;
 }
-
-std::string Format::FloatToString(const string& fmt, float value) {
+std::string Format::FormatFloat(const string& fmt, float value) {
   return FmtString(fmt, value);
 }

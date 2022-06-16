@@ -2,7 +2,7 @@
 
 #include "linux_parser.h"
 
-// TODO: Return the aggregate CPU utilization
+// DONE: Return the aggregate CPU utilization
 float Processor::Utilization() {
   auto idle = LinuxParser::IdleJiffies();
   auto nonIdle = LinuxParser::ActiveJiffies();
@@ -10,8 +10,8 @@ float Processor::Utilization() {
   auto prevTotal = prevIdle + prevNonIdle;
   auto total = idle + nonIdle;
 
-  auto totald = static_cast<float>((total - prevTotal));
-  auto idled = static_cast<float>((idle - prevIdle));
+  auto totald = static_cast<float>(total - prevTotal);
+  auto idled = static_cast<float>(idle - prevIdle);
 
   prevIdle = idle;
   prevNonIdle = nonIdle;
