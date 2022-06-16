@@ -1,9 +1,5 @@
 #include "process.h"
 
-#include <unistd.h>
-
-#include <cctype>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -18,6 +14,7 @@ int Process::Pid() const { return pid; }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() {
+  if (!LinuxParser::Exists(pid)) return cpuUsage;
   auto activeJiffies = LinuxParser::ActiveJiffies(pid);
   auto systemJiffies = LinuxParser::Jiffies();
 
@@ -28,7 +25,6 @@ float Process::CpuUtilization() {
   systemJiffiesCache = systemJiffies;
 
   cpuUsage = (totalActive / totalSystem);
-
   return cpuUsage;
 }
 

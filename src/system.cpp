@@ -28,6 +28,7 @@ Processor& System::Cpu() { return cpu_; }
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
   auto pids = LinuxParser::Pids();
+
   for (auto pid : pids) {
     Process process{pid};
     if (std::find(processes_.begin(), processes_.end(), process) ==
@@ -35,7 +36,13 @@ vector<Process>& System::Processes() {
       processes_.push_back(process);
   }
 
-  std::sort(processes_.begin(), processes_.end());
+  auto it =
+      std::remove_if(processes_.begin(), processes_.end(),
+                     [](Process& a) { return !LinuxParser::Exists(a.Pid()); });
+
+  processes_.erase(it, processes_.end());
+  
+  std::stable_sort(processes_.begin(), processes_.end());
 
   return processes_;
 }
