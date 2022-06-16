@@ -9,10 +9,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
+// DONE: Return this process's ID
 int Process::Pid() const { return pid; }
 
-// TODO: Return this process's CPU utilization
+// DONE: Return this process's CPU utilization
 float Process::CpuUtilization() {
   if (!LinuxParser::Exists(pid)) return cpuUsage;
   auto activeJiffies = LinuxParser::ActiveJiffies(pid);

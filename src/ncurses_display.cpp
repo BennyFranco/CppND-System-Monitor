@@ -97,14 +97,16 @@ void NCursesDisplay::Display(System& system, int n) {
   cbreak();       // terminate ncurses on ctrl + c
   start_color();  // enable color
 
-  n = static_cast<int>(system.Processes().size());
-
   int x_max{getmaxx(stdscr)};
   WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
   WINDOW* process_window =
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
 
   while (1) {
+    if (n != static_cast<int>(system.Processes().size())) {
+      n = static_cast<int>(system.Processes().size());
+      wresize(process_window, 3 + n, x_max - 1);
+    }
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);

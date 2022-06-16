@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+#if __GNUC__ >= 8
+#include <filesystem>
+#endif
+
 #include "format.h"
 
 using std::stof;
@@ -53,6 +57,18 @@ string LinuxParser::Kernel() {
 // BONUS: Update this to use std::filesystem
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
+  // I used a macro to check if the compiler version is 8 or greater,
+  // according GCC this version starts the support of std::filesystem.
+#if __GNUC__ >= 8
+  for (const auto& directory :
+       std::filesystem::directory_iterator(kProcDirectory)) {
+    string filename(directory.path().filename());
+    if (std::all_of(filename.begin(), filename.end(), isdigit)) {
+      int pid = stoi(filename);
+      pids.push_back(pid);
+    }
+  }
+#else
   DIR* directory = opendir(kProcDirectory.c_str());
   struct dirent* file;
   while ((file = readdir(directory)) != nullptr) {
@@ -67,6 +83,7 @@ vector<int> LinuxParser::Pids() {
     }
   }
   closedir(directory);
+#endif
   return pids;
 }
 
@@ -110,7 +127,7 @@ long LinuxParser::UpTime() {
   return uptimeInSeconds;
 }
 
-// TODO: Read and return the number of jiffies for the system
+// DONE: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return UpTime() * sysconf(_SC_CLK_TCK); }
 
 // DONE: Read and return the number of active jiffies for a PID
@@ -195,7 +212,7 @@ string LinuxParser::Ram(int pid) {
   std::ifstream file{kProcDirectory + to_string(pid) + kStatusFilename};
   auto vmSize = GetFileValue<float>(key, file);
   vmSize /= 1024.f;
-  auto result = Format::FmtString<float>("%.2f", vmSize);
+  auto result = Format::FormatFloat("%.2f", vmSize);
   return result;
 }
 
